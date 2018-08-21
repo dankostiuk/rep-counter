@@ -1,0 +1,51 @@
+import React from 'react';
+import PreviousDay from './PreviousDay';
+import CurrentDay from './CurrentDay';
+
+class App extends React.Component {
+	state = {
+		exercises: {}
+	};
+
+	updateWorkout = (exercise) => {
+		// take copy of existing state
+		const exercises = { ...this.state.exercises };
+		// add new exercise to exercises
+		exercises[`${exercise.name}`] = exercise;
+		// set new exercises object to state
+		this.setState({
+			exercises: exercises
+		});
+	};
+
+	getWorkoutFromURL = () => {
+	  var pathArray = window.location.pathname.split('/');
+		return pathArray[2];
+	}
+
+	goBack(event) {
+		// go back to workout selector
+		this.props.history.push(`/`);
+	}
+
+	render() {
+		return (
+			<div>
+				<button name="back" value="back" onClick={this.goBack.bind(this)}>
+					Back
+				</button>
+				<div className="rep-counter">
+					<PreviousDay
+						getWorkoutFromURL={this.getWorkoutFromURL}
+					/>
+					<CurrentDay
+						getWorkoutFromURL={this.getWorkoutFromURL}
+						updateWorkout={this.updateWorkout}
+					/>
+				</div>
+			</div>
+		)
+	}
+}
+
+export default App;
