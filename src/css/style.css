@@ -265,7 +265,7 @@ ul {
 .current-workout-edit input,
 .current-workout-edit textarea,
 .current-workout-edit select {
-  width: 33.33%;
+  width: 42%;
   padding: 10px;
   line-height: 1;
   font-size: 1.2rem;
@@ -287,12 +287,25 @@ ul {
 .current-workout-edit textarea {
   width: 100%;
 }
-.current-workout-edit input:last-of-type {
+.current-workout-edit input[name=exercise]{
+  width: 50%;
+}
+.current-workout-edit input[name=reps]{
+  width: 100%;
+}
+.current-workout-edit input[name=weights]{
   width: 100%;
 }
 .current-workout-edit button {
   width: 100%;
   border: 0;
+}
+.current-workout-edit label {
+  border-bottom: 1px solid #000;
+  font-size: 1.2rem;
+  width: 8%;
+  padding-left: 10px;
+  padding-top: 10px;
 }
 button,
 input[type=submit] {
@@ -411,4 +424,15 @@ input[type=submit].twitter:after {
 .workout-selector button[type="text"] {
   text-align: center;
   font-size: 3rem;
+}
+.workout-selector img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 5px;
+  width: 20%;
+}
+.workout-selector select {
+  width: 100%;
+  margin-bottom: 10px;
 }
