@@ -37,6 +37,7 @@ class App extends React.Component {
 				<div className="rep-counter">
 					<PreviousDay
 						getWorkoutFromURL={this.getWorkoutFromURL}
+						setPastWorkouts={this.setPastWorkout}
 					/>
 					<CurrentDay
 						getWorkoutFromURL={this.getWorkoutFromURL}
