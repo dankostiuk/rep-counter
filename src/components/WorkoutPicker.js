@@ -19,7 +19,7 @@ class WorkoutPicker extends React.Component {
 	render() {
 		return (
       <form className="workout-selector" onSubmit={this.goToWorkout}>
-        <img src={image}/>
+        <img src={image} alt="RepCounter"/>
         <h2>RepCounter</h2>
         <h5>Select Workout:</h5>
   			<select name="workout" ref={this.workoutRef}>

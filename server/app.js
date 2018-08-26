@@ -4,11 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var pastWorkoutsRouter = require('./routes/workouts');
 
 var app = express();
+
+// connect to Mongo when the app initializes
+mongoose.connect('mongodb://localhost/repcounter');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

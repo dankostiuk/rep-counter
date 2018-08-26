@@ -7,7 +7,7 @@ class PreviousDay extends React.Component {
 	};
 
 	componentDidMount() {
-	    fetch('/pastWorkout')
+	    fetch('/pastWorkout?type=' + this.props.getWorkoutFromURL())
 	      .then(res => res.json())
 	      .then(pastExercises => this.setState({ pastExercises }))
 				.catch(error => { console.error(error)});
@@ -15,10 +15,12 @@ class PreviousDay extends React.Component {
 
 	render() {
 		return (
-			<div className="order">
+			<div className="previous-day">
 				<h2>Previous {this.props.getWorkoutFromURL()} Day</h2>
 				{this.state.pastExercises.map(exercise =>
-					<div key={exercise.id}>{exercise.name}</div>
+					<div key={exercise.id}>
+						{exercise.name} {exercise.weight} {exercise.reps}
+					</div>
 				)}
 			</div>
 		);
