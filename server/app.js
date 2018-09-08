@@ -7,7 +7,8 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-var pastWorkoutsRouter = require('./routes/workouts');
+var pastWorkoutRouter = require('./routes/workouts');
+var currentExerciseRouter = require('./routes/exercises');
 
 var app = express();
 
@@ -26,7 +27,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/pastWorkout', pastWorkoutsRouter);
+app.use('/pastWorkout', pastWorkoutRouter);
+app.use('/saveExercise', currentExerciseRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

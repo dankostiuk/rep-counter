@@ -307,6 +307,18 @@ ul {
   padding-left: 10px;
   padding-top: 10px;
 }
+.past-workout {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+  border: 2px solid #000;
+  overflow: hidden;
+}
+.past-workout label {
+  font-size: 1.5rem;
+  width: 8%;
+  padding-left: 10px;
+  padding-top: 10px;
+}
 button,
 input[type=submit] {
   text-transform: uppercase;
