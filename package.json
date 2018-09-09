@@ -20,11 +20,11 @@
     "stylus": "0.54.5"
   },
   "scripts": {
-    "server": "cd server && npm start",
-    "start-both": "concurrently \"npm run server\" \"react-scripts start\"",
     "start": "react-scripts start",
+    "prod": "npm run build && npm run deploy && cd server && npm run prod",
     "watch": "concurrently --names \"webpack, stylus\" --prefix name \"npm run start\" \"npm run styles:watch\"",
     "build": "react-scripts build",
+    "deploy": "rm -rf server/public && mv build server/public",
     "eject": "react-scripts eject",
     "styles": "stylus -u autoprefixer-stylus ./src/css/style.styl -o ./src/css/style.css",
     "styles:watch": "stylus -u autoprefixer-stylus -w ./src/css/style.styl -o ./src/css/style.css"
