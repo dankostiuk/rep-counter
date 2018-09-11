@@ -30,8 +30,7 @@ router.post('/', async function(req, res, next) {
     name: req.body.name,
     reps: req.body.reps,
     weights: req.body.weights,
-    notes: req.body.notes,
-    workout_id: mongoose.Types.ObjectId(workoutId)
+    notes: req.body.notes
   }
 
   // create new entry (or update existing) for exercise+workout_id combo

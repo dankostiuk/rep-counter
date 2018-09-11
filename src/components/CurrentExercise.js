@@ -26,9 +26,7 @@ class CurrentExercise extends React.Component {
 				 },
         body: JSON.stringify(currentExercise)
     })
-    .then(response => console.log(response))
-
-		//this.props.updateWorkout(currentWorkout);
+    .then(response => this.props.notifySaved(event, currentExercise.name));
 	}
 
 	handleSetSets = () => {
