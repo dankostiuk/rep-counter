@@ -4,11 +4,14 @@ import CurrentExercise from './CurrentExercise';
 
 class CurrentDay extends React.Component {
 
-	state = {
-		pastWorkout: {
-			workout_exercises: []
-		}
-	};
+	constructor() {
+		super();
+		this.state = {
+			pastWorkout: {
+				workout_exercises: []
+			}
+		};
+	}
 
 	componentDidMount() {
 		this._notificationSystem = null;
@@ -20,15 +23,37 @@ class CurrentDay extends React.Component {
 			.catch(error => { console.error(error)});
   }
 
-	showSaveNotification(event, name) {
+	showNotification(event, type, name) {
 		event.preventDefault();
 		if (this._notificationSystem) {
- 			this._notificationSystem.addNotification({
-				title: 'Saved!',
-				message: name,
-				level: 'success'
-		 });
+
+			if (type === 'save')
+	 			this._notificationSystem.addNotification({
+					title: 'Saved!',
+					message: name,
+					level: 'success'
+			 });
+
+			 if (type === 'error')
+				 this._notificationSystem.addNotification({
+					 title: 'Error!',
+					 message: 'Please fill all fields',
+					 level: 'error'
+				});
 	 }
+ }
+
+ addNewExercise = (event)  => {
+		const newExercise = {
+			name: '',
+			reps: '',
+			weights: '',
+			notes: '',
+		}
+		var pastWorkout = {...this.state.pastWorkout};
+		pastWorkout.workout_exercises.push(newExercise);
+
+		this.setState({pastWorkout});
  }
 
 	render() {
@@ -41,9 +66,12 @@ class CurrentDay extends React.Component {
 						<CurrentExercise
 							currentExercise={exercise}
 							getWorkoutFromURL={this.props.getWorkoutFromURL}
-							notifySaved={this.showSaveNotification.bind(this)}
+							notify={this.showNotification.bind(this)}
 						/>
 					)}
+				</div>
+				<div className="add-new-exercise">
+					<button type="submit" onClick={this.addNewExercise}>+ Add New</button>
 				</div>
 			</div>
 		);

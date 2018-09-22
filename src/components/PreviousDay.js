@@ -2,11 +2,14 @@ import React from 'react';
 
 class PreviousDay extends React.Component {
 
-	state = {
-		pastWorkout: {
-			workout_exercises: []
-		}
-	};
+	constructor(props) {
+		super(props);
+		this.state = {
+			pastWorkout: {
+				workout_exercises: []
+			}
+		};
+	}
 
 	componentDidMount() {
 	    fetch('/pastWorkout?type=' + this.props.getWorkoutFromURL())
@@ -14,7 +17,9 @@ class PreviousDay extends React.Component {
 	      .then(pastWorkout => {
 					this.setState({ pastWorkout })
 				})
-				.catch(error => { console.error(error)});
+				.catch(error => {
+					console.error(error);
+				});
   }
 
 	getDateFromISOString(isoString) {
@@ -24,6 +29,8 @@ class PreviousDay extends React.Component {
 	}
 
 	render() {
+		const noPreviousWorkouts = this.state.pastWorkout.workout_exercises.length == 0;
+
 		return (
 			<div className="previous-day">
 				<h2>Previous {this.props.getWorkoutFromURL()} Day</h2>
@@ -44,6 +51,7 @@ class PreviousDay extends React.Component {
 						</div>
 					</div>
 				)}
+				<div>{noPreviousWorkouts ? 'No past records found - add new exercises and check back later.':''}</div>
 			</div>
 		);
 	}

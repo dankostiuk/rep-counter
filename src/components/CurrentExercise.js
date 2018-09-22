@@ -18,6 +18,13 @@ class CurrentExercise extends React.Component {
 			notes: this.notesRef.current.value,
 		}
 
+		if (currentExercise.name == '' ||
+				currentExercise.reps == '' ||
+				currentExercise.weights == '') {
+			this.props.notify(event, 'error', 'blank');
+			return;
+		}
+
 		return fetch('/saveExercise?type=' + this.props.getWorkoutFromURL(), {
         method: 'POST',
 				headers: {
@@ -26,7 +33,7 @@ class CurrentExercise extends React.Component {
 				 },
         body: JSON.stringify(currentExercise)
     })
-    .then(response => this.props.notifySaved(event, currentExercise.name));
+    .then(response => this.props.notify(event, 'save', currentExercise.name));
 	}
 
 	handleSetSets = () => {

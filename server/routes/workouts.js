@@ -25,12 +25,16 @@ router.get('/', async function(req, res, next) {
      }
   ]);
 
-  // send back the latest workout that isn't today
-  let i = 0;
-  if (!moment(workouts[i].date).isBefore(moment().startOf('day'))) {
-    i++;
+  if (workouts !== undefined && workouts.length !== 0) {
+    // send back the latest workout that isn't today
+    let i = 0;
+    if (!moment(workouts[i].date).isBefore(moment().startOf('day'))) {
+      i++;
+    }
+    res.send(workouts[i]);
+  } else {
+    res.send();
   }
-  res.send(workouts[i]);
 });
 
 module.exports = router;
