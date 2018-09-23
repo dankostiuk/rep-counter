@@ -9,11 +9,12 @@ var mongoose = require('mongoose');
 var indexRouter = require('./routes/index');
 var pastWorkoutRouter = require('./routes/workouts');
 var currentExerciseRouter = require('./routes/exercises');
+require('dotenv').config();
 
 var app = express();
 
 // connect to Mongo when the app initializes
-mongoose.connect('mongodb://localhost/repcounter');
+mongoose.connect(process.env.DB_CONN);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
