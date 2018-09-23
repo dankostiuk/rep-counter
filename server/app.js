@@ -5,12 +5,20 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 var indexRouter = require('./routes/index');
 var pastWorkoutRouter = require('./routes/workouts');
 var currentExerciseRouter = require('./routes/exercises');
 
 var app = express();
+
+// passport config
+var User = require('./models/user');
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 // connect to Mongo when the app initializes
 mongoose.connect('mongodb://localhost/repcounter');
