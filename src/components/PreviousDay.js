@@ -29,7 +29,7 @@ class PreviousDay extends React.Component {
 	}
 
 	render() {
-		const noPreviousWorkouts = this.state.pastWorkout.workout_exercises.length == 0;
+		const noPreviousWorkouts = this.state.pastWorkout.workout_exercises.length === 0;
 
 		return (
 			<div className="previous-day">

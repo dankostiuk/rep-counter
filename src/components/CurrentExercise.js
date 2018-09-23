@@ -18,9 +18,9 @@ class CurrentExercise extends React.Component {
 			notes: this.notesRef.current.value,
 		}
 
-		if (currentExercise.name == '' ||
-				currentExercise.reps == '' ||
-				currentExercise.weights == '') {
+		if (currentExercise.name === '' ||
+				currentExercise.reps === '' ||
+				currentExercise.weights === '') {
 			this.props.notify(event, 'error', 'blank');
 			return;
 		}
