@@ -48,7 +48,7 @@ class App extends React.Component {
 					/>
 				</div>
 				<div className="copyright">
-				🏋️ By dankostiuk
+				🏋️ by dankostiuk
 				</div>
 			</div>
 		)

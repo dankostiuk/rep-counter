@@ -171,7 +171,10 @@ html {
   font-size: 62.5%;
 }
 body {
-  background: #d4d4d4;
+
+  background: url(https://whytheweights.com/wp-content/uploads/2018/01/cropped-Weights-Gym-Training-Old-01.jpg) no-repeat center center fixed;
+  background-size: cover;
+
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: 'Open Sans', sans-serif;
@@ -479,10 +482,12 @@ input[type=submit].twitter:after {
   margin-bottom: 10px;
 }
 .title {
+  color: #ffffff;
   text-align: center;
   width: 100%;
 }
 .copyright {
+  color: #ffffff;
   text-align: right;
   width: 100%;
 }
