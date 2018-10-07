@@ -4,6 +4,7 @@ var mongoose = require('mongoose')
   , Schema = mongoose.Schema;
 
 var exerciseSchema = new Schema({
+    _id:  mongoose.Schema.Types.ObjectId,
     name: String,
     reps: String,
     weights: String,

@@ -7,8 +7,8 @@ var cors = require('cors');
 var mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
-var pastWorkoutRouter = require('./routes/workouts');
-var currentExerciseRouter = require('./routes/exercises');
+var workoutRouter = require('./routes/workouts');
+var exerciseRouter = require('./routes/exercises');
 require('dotenv').config();
 
 var app = express();
@@ -28,8 +28,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/pastWorkout', pastWorkoutRouter);
-app.use('/saveExercise', currentExerciseRouter);
+app.use('/workout', workoutRouter);
+app.use('/exercise', exerciseRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

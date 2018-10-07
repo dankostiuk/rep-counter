@@ -15,7 +15,7 @@ class CurrentDay extends React.Component {
 
 	componentDidMount() {
 		this._notificationSystem = null;
-		fetch('/pastWorkout?type=' + this.props.getWorkoutFromURL())
+		fetch('/workout?type=' + this.props.getWorkoutFromURL())
 			.then(res => res.json())
 			.then(pastWorkout => {
 				this.setState({ pastWorkout })
@@ -45,15 +45,27 @@ class CurrentDay extends React.Component {
 
  addNewExercise = (event)  => {
 		const newExercise = {
+			_id: this.state.pastWorkout.workout_exercises.length,
 			name: '',
 			reps: '',
 			weights: '',
 			notes: '',
 		}
-		var pastWorkout = {...this.state.pastWorkout};
+		let pastWorkout = {...this.state.pastWorkout};
 		pastWorkout.workout_exercises.push(newExercise);
 
 		this.setState({pastWorkout});
+ }
+
+ deleteExercise = (exercise) => {
+	 let pastWorkout = {...this.state.pastWorkout};
+	 let currentExercises = pastWorkout.workout_exercises.filter( workout_exercise => {
+		 return workout_exercise._id !== exercise._id;
+	 });
+
+	 pastWorkout.workout_exercises = currentExercises;
+
+	 this.setState({pastWorkout});
  }
 
 	render() {
@@ -64,9 +76,11 @@ class CurrentDay extends React.Component {
 				<div className="exercise-list">
 					{this.state.pastWorkout.workout_exercises.map(exercise =>
 						<CurrentExercise
+							key={exercise._id}
 							currentExercise={exercise}
 							getWorkoutFromURL={this.props.getWorkoutFromURL}
 							notify={this.showNotification.bind(this)}
+							deleteExercise={this.deleteExercise.bind(this)}
 						/>
 					)}
 				</div>

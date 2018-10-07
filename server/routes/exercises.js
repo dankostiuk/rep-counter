@@ -8,8 +8,6 @@ var Workout = require('../models/workout.js');
 /* POST update current exercise. */
 router.post('/', async function(req, res, next) {
 
-  console.log(JSON.stringify(req.body));
-
   const workout = await Workout.findOne({ type: req.query.type, date: moment().startOf('day') });
 
   let workoutId = '';
@@ -34,17 +32,17 @@ router.post('/', async function(req, res, next) {
   }
 
   // create new entry (or update existing) for exercise+workout_id combo
+  // ensure that mongodb exercises collection has unique index (name + workout_id) to avoid duplicates
   await Exercise.findOneAndUpdate(
     { name: exercise.name, workout_id: mongoose.Types.ObjectId(workoutId) },
     exercise,
     {upsert: true, new: true},
     function (err) {
-    if (err) {
-      console.log(err);
-    }
+      if (err) {
+        console.log(err);
+      }
   });
 
-  //TODO: send success response
   res.send(req.body);
 });
 
