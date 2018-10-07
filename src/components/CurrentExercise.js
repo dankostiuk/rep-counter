@@ -65,7 +65,7 @@ class CurrentExercise extends React.Component {
 					<option value="7">7</option>
 					<option value="8">8</option>
 				</select>
-				<button name="close" onClick={() => this.props.deleteExercise(this.props.currentExercise)}>X</button>
+				<button name="close" onClick={() => this.props.deleteExercise(this.props.currentExercise)}>🗑️</button>
 				<input
 					name="reps"
 					ref={this.repsRef}

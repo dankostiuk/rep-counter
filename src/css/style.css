@@ -206,7 +206,7 @@ h3 {
   height: 90vh;
   max-width: 1500px;
   margin: 0 auto;
-  margin-top: 5vh;
+  margin-top: 2vh;
   -webkit-perspective: 1000px;
           perspective: 1000px;
   -webkit-transform-style: preserve-3d;
@@ -382,6 +382,17 @@ button[name=close]:after {
   left: 0;
   top: 0;
 }
+button[name=back]:after {
+  content: '';
+  z-index: -1;
+  display: block;
+  background: #000000;
+  position: absolute;
+  width: 100%;
+  height: 0;
+  left: 0;
+  top: 0;
+}
 button:hover,
 input[type=submit]:hover,
 button:focus,
@@ -466,4 +477,12 @@ input[type=submit].twitter:after {
 .workout-selector select {
   width: 100%;
   margin-bottom: 10px;
+}
+.title {
+  text-align: center;
+  width: 100%;
+}
+.copyright {
+  text-align: right;
+  width: 100%;
 }

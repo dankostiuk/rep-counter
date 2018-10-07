@@ -34,6 +34,9 @@ class App extends React.Component {
 				<button name="back" value="back" onClick={this.goBack.bind(this)}>
 					Back
 				</button>
+				<div className="title">
+					- repcountr -
+				</div>
 				<div className="rep-counter">
 					<PreviousDay
 						getWorkoutFromURL={this.getWorkoutFromURL}
@@ -43,6 +46,9 @@ class App extends React.Component {
 						getWorkoutFromURL={this.getWorkoutFromURL}
 						updateWorkout={this.updateWorkout}
 					/>
+				</div>
+				<div className="copyright">
+				🏋️ By dankostiuk
 				</div>
 			</div>
 		)
