@@ -6,6 +6,14 @@ var Workout = require('../models/workout.js');
 
 /* GET past workouts listing. */
 router.get('/', async function(req, res, next) {
+
+  let matchObj = {
+    type : req.query.type
+  }
+  if (req.query.date !== undefined) {
+    matchObj.date = new Date(req.query.date + ' 0:0');
+  }
+
   // get past workouts for workout type, sorted by date
   const workouts = await Workout.aggregate([
       {
@@ -18,7 +26,7 @@ router.get('/', async function(req, res, next) {
           }
      },
      {
-       $match : { type : req.query.type }
+       $match : matchObj
      },
      {
        $sort: {'date': -1}
@@ -32,8 +40,21 @@ router.get('/', async function(req, res, next) {
       i++;
     }
     res.send(workouts[i]);
-  } else {
-    res.send();
+  }
+});
+
+/* GET past date list of workout type. */
+router.get('/dates', async function(req, res, next) {
+  const workouts = await Workout.find({"type" : req.query.type}).sort({'date': -1});
+
+  if (workouts !== undefined && workouts.length !== 0) {
+    dates = [];
+    workouts.forEach(workout => {
+      if (moment(workout.date).isBefore(moment().startOf('day'))) {
+          dates.push((workout.date.toISOString().split("T")[0]))
+      }
+    });
+    res.send(dates);
   }
 });
 

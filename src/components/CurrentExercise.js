@@ -25,7 +25,7 @@ class CurrentExercise extends React.Component {
 			return;
 		}
 
-		return fetch('/saveExercise?type=' + this.props.getWorkoutFromURL(), {
+		return fetch('/exercise?type=' + this.props.getWorkoutFromURL(), {
         method: 'POST',
 				headers: {
 					'Accept': 'application/json',
@@ -42,8 +42,9 @@ class CurrentExercise extends React.Component {
 	}
 
 	render() {
+		let key = this.props.key;
 		return (
-			<form className="current-workout-edit" onSubmit={this.updateExercise}>
+			<form className="current-workout-edit">
 				<input
 					name="exercise"
 					ref={this.nameRef}
@@ -64,6 +65,7 @@ class CurrentExercise extends React.Component {
 					<option value="7">7</option>
 					<option value="8">8</option>
 				</select>
+				<button name="close" onClick={() => this.props.deleteExercise(this.props.currentExercise)}>🗑️</button>
 				<input
 					name="reps"
 					ref={this.repsRef}
@@ -83,7 +85,7 @@ class CurrentExercise extends React.Component {
 					ref={this.notesRef}
 					placeholder="Notes"
 				/>
-				<button type="submit">Apply</button>
+				<button type="submit" name="submit" onClick={this.updateExercise}>Apply</button>
 			</form>
 		);
 	}

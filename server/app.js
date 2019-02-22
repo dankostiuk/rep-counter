@@ -9,8 +9,9 @@ var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
 
 var indexRouter = require('./routes/index');
-var pastWorkoutRouter = require('./routes/workouts');
-var currentExerciseRouter = require('./routes/exercises');
+var workoutRouter = require('./routes/workouts');
+var exerciseRouter = require('./routes/exercises');
+require('dotenv').config();
 
 var app = express();
 
@@ -21,7 +22,7 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 // connect to Mongo when the app initializes
-mongoose.connect('mongodb://localhost/repcounter');
+mongoose.connect(process.env.DB_CONN);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,8 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
 app.use('/', indexRouter);
-app.use('/pastWorkout', pastWorkoutRouter);
-app.use('/saveExercise', currentExerciseRouter);
+app.use('/workout', workoutRouter);
+app.use('/exercise', exerciseRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
