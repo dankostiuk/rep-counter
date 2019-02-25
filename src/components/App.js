@@ -48,7 +48,7 @@ class App extends React.Component {
 					/>
 				</div>
 				<div className="copyright">
-				🏋️ by dankostiuk
+					<span role="img" aria-label="Lift">🏋️</span> by dankostiuk
 				</div>
 			</div>
 		)
