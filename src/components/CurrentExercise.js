@@ -26,7 +26,7 @@ class CurrentExercise extends React.Component {
 		}
 
 		return fetch('/exercise?type=' + this.props.getWorkoutFromURL(), {
-        method: 'POST',
+        method: 'PUT',
 				headers: {
 					'Accept': 'application/json',
 		 			'Content-Type': 'application/json'

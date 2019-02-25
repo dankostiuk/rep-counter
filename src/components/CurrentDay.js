@@ -79,8 +79,8 @@ class CurrentDay extends React.Component {
 							key={exercise._id}
 							currentExercise={exercise}
 							getWorkoutFromURL={this.props.getWorkoutFromURL}
-							notify={this.showNotification.bind(this)}
-							deleteExercise={this.deleteExercise.bind(this)}
+							notify={() => this.showNotification}
+							deleteExercise={() => this.deleteExercise}
 						/>
 					)}
 				</div>

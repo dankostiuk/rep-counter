@@ -5,8 +5,8 @@ var router = express.Router();
 var Exercise = require('../models/exercise.js');
 var Workout = require('../models/workout.js');
 
-/* POST update current exercise. */
-router.post('/', async function(req, res, next) {
+/* PUT update current exercise. */
+router.put('/', async function(req, res, next) {
 
   const workout = await Workout.findOne({ type: req.query.type, date: moment().startOf('day') });
 
@@ -36,7 +36,7 @@ router.post('/', async function(req, res, next) {
   await Exercise.findOneAndUpdate(
     { name: exercise.name, workout_id: mongoose.Types.ObjectId(workoutId) },
     exercise,
-    {upsert: true, new: true},
+    { upsert: true, new: true },
     function (err) {
       if (err) {
         console.log(err);
