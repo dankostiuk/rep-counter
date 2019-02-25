@@ -1,10 +1,9 @@
 var express = require('express');
-var mongoose = require('mongoose');
 var moment = require('moment');
 var router = express.Router();
 var Workout = require('../models/workout.js');
 
-/* GET past workouts listing. */
+/* GET past workout listing. */
 router.get('/', async function(req, res, next) {
 
   let matchObj = {
@@ -40,6 +39,8 @@ router.get('/', async function(req, res, next) {
       i++;
     }
     res.send(workouts[i]);
+  } else {
+    res.send({});
   }
 });
 
@@ -55,6 +56,8 @@ router.get('/dates', async function(req, res, next) {
       }
     });
     res.send(dates);
+  } else {
+    res.send([]);
   }
 });
 

@@ -23,6 +23,9 @@ class PreviousDay extends React.Component {
 				// fetch past workout for most recent date, using method getWorkoutForDate
 				this.getWorkoutForDate(dateList[0]);
 			})
+			.catch(error => {
+				console.log(error);
+			});
   }
 
 	handleDateSelectChange(e) {
@@ -31,12 +34,17 @@ class PreviousDay extends React.Component {
 
 	getWorkoutForDate(date) {
 		fetch('/workout?type=' + this.props.getWorkoutFromURL() + '&date=' + date)
-			.then(res => res.json())
+			.then(res => {
+				if (!res.ok) {
+					throw Error(res.statusText);
+				}
+				return res.json()
+			})
 			.then(pastWorkout => {
 				this.setState({ pastWorkout })
 			})
 			.catch(error => {
-				console.error(error);
+				
 			});
 	}
 
@@ -47,7 +55,8 @@ class PreviousDay extends React.Component {
 	}
 
 	render() {
-		const noPreviousWorkouts = this.state.pastWorkout.workout_exercises.length === 0;
+		const noPreviousWorkouts = !this.state.pastWorkout.workout_exercises
+			|| this.state.pastWorkout.workout_exercises.length === 0;
 		const dateList = this.state.dateList;
 		const dateListItems = dateList.map((date) =>
 			<option key={date}>{this.formatDate(date)}</option>
@@ -57,23 +66,28 @@ class PreviousDay extends React.Component {
 			<div className="previous-day">
 				<h2>Previous {this.props.getWorkoutFromURL()} Day</h2>
 				<h5><select onChange={(e) => this.handleDateSelectChange(e)}>{dateListItems}</select></h5>
-				{this.state.pastWorkout.workout_exercises.map(exercise =>
-					<div key={exercise._id} className="past-workout">
+				{	noPreviousWorkouts 
+					? 
 						<div>
-							<label>Exercise:</label> {exercise.name}
+							'No past records found - add new exercises and check back later.'
 						</div>
-						<div>
-							<label>Reps:</label> {exercise.reps}
+					:
+						this.state.pastWorkout.workout_exercises.map(exercise =>
+						<div key={exercise._id} className="past-workout">
+							<div>
+								<label>Exercise:</label> {exercise.name}
+							</div>
+							<div>
+								<label>Reps:</label> {exercise.reps}
+							</div>
+							<div>
+								<label>Weight:</label> {exercise.weights}
+							</div>
+							<div>
+								<label>Notes:</label> {exercise.notes}
+							</div>
 						</div>
-						<div>
-							<label>Weight:</label> {exercise.weights}
-						</div>
-						<div>
-							<label>Notes:</label> {exercise.notes}
-						</div>
-					</div>
 				)}
-				<div>{noPreviousWorkouts ? 'No past records found - add new exercises and check back later.':''}</div>
 			</div>
 		);
 	}
