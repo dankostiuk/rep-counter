@@ -2,11 +2,12 @@ var express = require('express');
 var mongoose = require('mongoose');
 var moment = require('moment');
 var router = express.Router();
+var { ensureAuthenticated } = require('../config/auth');
 var Exercise = require('../models/exercise.js');
 var Workout = require('../models/workout.js');
 
 /* PUT update current exercise. */
-router.put('/', async function(req, res, next) {
+router.put('/', ensureAuthenticated, async function(req, res, next) {
 
   const workout = await Workout.findOne({ type: req.query.type, date: moment().startOf('day') });
 
