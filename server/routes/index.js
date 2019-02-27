@@ -108,7 +108,6 @@ router.post('/register', async function(req, res, next) {
 /* GET logout. */
 router.get('/logout', (req, res) => {
   console.log('logging out...');
-  //res.clearCookie('user_id');
   req.logout();
   res.redirect('/');
 });

@@ -13,6 +13,7 @@ class WorkoutPicker extends React.Component {
     this.state = {
       showModal: false,
       loading: false,
+      loggedIn: false
     };
   }
 
@@ -24,6 +25,9 @@ class WorkoutPicker extends React.Component {
     .then(response => {
       if (!response.ok) {
         this.openModal();
+      } else {
+        this.onLoginSuccess('session');
+        this.showNotification('login');
       }
     })
   }
@@ -57,8 +61,8 @@ class WorkoutPicker extends React.Component {
         if (!response.ok) {
           throw Error(response.statusText);
         }
-        this.showNotification('login');
         this.onLoginSuccess('form');
+        this.showNotification('login');
       })
       .catch(error => { 
         console.error(error);
@@ -96,8 +100,8 @@ class WorkoutPicker extends React.Component {
         if (!response.ok) {
           throw Error(response.statusText);
         }
-        this.showNotification('save', 'Registered successfully');
         this.onLoginSuccess('form');  
+        this.showNotification('save', 'Registered successfully');
       })
       .catch(error => { 
         console.error(error)
@@ -140,10 +144,10 @@ class WorkoutPicker extends React.Component {
   }
 
   onLoginSuccess(method, response) {
-    console.log('logged successfully with ' + method);
+    console.log('logged in successfully with ' + method);
     this.closeModal();
     this.setState({
-      loggedIn: method,
+      loggedIn: true,
       loading: false
     })
   }
@@ -199,13 +203,25 @@ class WorkoutPicker extends React.Component {
 
 	goToWorkout = (event) => {
 		// stop form from saving
-		event.preventDefault();
+    event.preventDefault();
+    
+    // check to see if we require login
+    if (!this.state.loggedIn) {
+      fetch('/login')
+      .then(response => {
+        if (!response.ok) {
+          this.openModal();
+        } else {
+          this.onLoginSuccess('session');
+        }
+      })
+    } else {
+       // get text from select
+       const workoutName = this.workoutRef.current.value;
 
-		// get text from select
-		const workoutName = this.workoutRef.current.value;
-
-		// change page to /workout/workoutName
-		this.props.history.push(`/workout/${workoutName}`);
+       // change page to /workout/workoutName
+       this.props.history.push(`/workout/${workoutName}`);
+    }
 	}
 
 	render() {
