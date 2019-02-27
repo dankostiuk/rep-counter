@@ -5,8 +5,10 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var mongoose = require('mongoose');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
+
 
 var indexRouter = require('./routes/index');
 var workoutRouter = require('./routes/workouts');
@@ -16,13 +18,12 @@ require('dotenv').config();
 var app = express();
 
 // passport config
-var User = require('./models/user');
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+require('./config/passport')(passport)
 
 // connect to Mongo when the app initializes
-mongoose.connect(process.env.DB_CONN);
+mongoose.connect(process.env.DB_CONN, { useNewUrlParser: true, useCreateIndex: true })
+  .then(() => console.log('MongoDB Connected...'))
+  .catch(err => console.log)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -35,6 +36,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
 
+// express session - but passport uses a different cookie?
+app.use(session({
+  //key: 'user_id',
+  secret: 'secret',
+  store: new MongoStore({ mongooseConnection: mongoose.connection }),
+  resave: false,
+  saveUninitialized: false,
+  //cookie: { expires: 365 * 24 * 60 * 60 * 1000, },
+}))
+
+// passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// routes
 app.use('/', indexRouter);
 app.use('/workout', workoutRouter);
 app.use('/exercise', exerciseRouter);
@@ -52,7 +68,6 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
 });
 
 module.exports = app;

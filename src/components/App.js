@@ -28,11 +28,19 @@ class App extends React.Component {
 		this.props.history.push(`/`);
 	}
 
+	logout() {
+		fetch('/logout')
+		.then(this.props.history.push(`/`));
+	}
+
 	render() {
 		return (
 			<div>
-				<button name="back" value="back" onClick={this.goBack.bind(this)}>
+				<button name="back" value="back" onClick={() => this.goBack()}>
 					Back
+				</button>
+				<button name="logout" value="logout" onClick={() => this.logout()}>
+					Logout
 				</button>
 				<div className="title">
 					- repcountr -
@@ -48,7 +56,7 @@ class App extends React.Component {
 					/>
 				</div>
 				<div className="copyright">
-				🏋️ by dankostiuk
+					<span role="img" aria-label="lift">🏋️</span> by dankostiuk
 				</div>
 			</div>
 		)

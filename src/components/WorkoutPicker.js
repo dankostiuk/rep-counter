@@ -19,10 +19,13 @@ class WorkoutPicker extends React.Component {
   componentDidMount() {
     this._notificationSystem = null;
 
-    //TODO: read from cookie here eventually?
-    if (this.state.loggedIn === undefined) {
+    // check to see if we require login
+    fetch('/login')
+    .then(response => {
+      if (!response.ok) {
         this.openModal();
-    }
+      }
+    })
   }
 
   onLogin() {
@@ -51,10 +54,16 @@ class WorkoutPicker extends React.Component {
           body: JSON.stringify(user)
       })
       .then(response => {
-          this.showNotification('login');
-          this.onLoginSuccess('form');
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        this.showNotification('login');
+        this.onLoginSuccess('form');
       })
-      .catch(error => { console.error(error)});
+      .catch(error => { 
+        console.error(error);
+        this.onLoginFail('form', error);
+      });
     }
   }
 
@@ -84,10 +93,16 @@ class WorkoutPicker extends React.Component {
           body: JSON.stringify(user)
       })
       .then(response => {
-          this.showNotification('save', 'Registered successfully');
-          this.onLoginSuccess('form');
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        this.showNotification('save', 'Registered successfully');
+        this.onLoginSuccess('form');  
       })
-      .catch(error => { console.error(error)});
+      .catch(error => { 
+        console.error(error)
+        this.onLoginFail('form', error);
+      });
     }
   }
 
@@ -134,7 +149,7 @@ class WorkoutPicker extends React.Component {
   }
 
   onLoginFail(method, response) {
-    console.log('logging failed with ' + method);
+    console.log('login failed with ' + method);
     this.setState({
       error: response
     })
