@@ -1,6 +1,7 @@
 import React from 'react';
 import PreviousDay from './PreviousDay';
 import CurrentDay from './CurrentDay';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 
 class App extends React.Component {
 	state = {
@@ -36,15 +37,28 @@ class App extends React.Component {
 	render() {
 		return (
 			<div>
-				<button name="back" value="back" onClick={() => this.goBack()}>
-					Back
-				</button>
-				<button name="logout" value="logout" onClick={() => this.logout()}>
-					Logout
-				</button>
-				<div className="title">
-					- repcountr -
-				</div>
+				<Grid fluid>
+					<Row between="xs">
+						<Col xs={2}>
+						<button name="back" value="back" onClick={() => this.goBack()}>
+							Back
+						</button>
+						</Col>
+						<Col xs={3}>
+						<div className="title">
+							_repcountr
+						</div>
+						</Col>
+						<Col xs={2}>
+						<button name="logout" value="logout" onClick={() => this.logout()}>
+							Logout
+						</button>
+						</Col>
+					</Row>
+				</Grid>
+				
+				
+				
 				<div className="rep-counter">
 					<PreviousDay
 						getWorkoutFromURL={this.getWorkoutFromURL}

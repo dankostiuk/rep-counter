@@ -1,4 +1,7 @@
 import React from 'react';
+import { getDateFromDateTime,
+	convertFromUtc,
+	convertToUtc } from '../dateHelpers';
 
 class PreviousDay extends React.Component {
 
@@ -17,22 +20,30 @@ class PreviousDay extends React.Component {
 		fetch('/workout/dates?type=' + this.props.getWorkoutFromURL())
 			.then(res => res.json())
 			.then(dateList => {
+
+				let mostRecentDate = dateList[0];
+				// set state to have local times
 				this.setState({
 					dateList: dateList,
 				});
-				// fetch past workout for most recent date, using method getWorkoutForDate
-				this.getWorkoutForDate(dateList[0]);
+				console.log('latest date: ' + mostRecentDate);
+				if (mostRecentDate) {
+					// fetch past workout for most recent date, using method getWorkoutForDate
+					this.getWorkoutForDate(mostRecentDate);
+				}
 			})
 			.catch(error => {
 				console.log(error);
 			});
-  }
+  	}
 
 	handleDateSelectChange(e) {
-		this.getWorkoutForDate(e.target.value);
+		let index = e.target.selectedIndex;
+		this.getWorkoutForDate(this.state.dateList[index]);
 	}
 
 	getWorkoutForDate(date) {
+		console.log('getting past workout for date: ' + date);
 		fetch('/workout?type=' + this.props.getWorkoutFromURL() + '&date=' + date)
 			.then(res => {
 				if (!res.ok) {
@@ -41,53 +52,62 @@ class PreviousDay extends React.Component {
 				return res.json()
 			})
 			.then(pastWorkout => {
+				console.log(pastWorkout);
 				this.setState({ pastWorkout })
 			})
 			.catch(error => {
-				
+				console.log(error);
 			});
-	}
-
-	formatDate(currentDate) {
-		if (currentDate !== undefined) {
-			return currentDate.toString().split("T")[0];
-		}
 	}
 
 	render() {
 		const noPreviousWorkouts = !this.state.pastWorkout.workout_exercises
 			|| this.state.pastWorkout.workout_exercises.length === 0;
-		const dateList = this.state.dateList;
-		const dateListItems = dateList.map((date) =>
-			<option key={date}>{this.formatDate(date)}</option>
-			);
 
 		return (
 			<div className="previous-day">
 				<h2>Previous {this.props.getWorkoutFromURL()} Day</h2>
-				<h5><select onChange={(e) => this.handleDateSelectChange(e)}>{dateListItems}</select></h5>
-				{	noPreviousWorkouts 
+				{	
+					noPreviousWorkouts 
 					? 
 						<div>
-							'No past records found - add new exercises and check back later.'
+							<p>
+								No records found!
+							</p>
+							<p>
+								Add new exercises and check back after 24h.
+							</p>
 						</div>
 					:
-						this.state.pastWorkout.workout_exercises.map(exercise =>
-						<div key={exercise._id} className="past-workout">
-							<div>
-								<label>Exercise:</label> {exercise.name}
-							</div>
-							<div>
-								<label>Reps:</label> {exercise.reps}
-							</div>
-							<div>
-								<label>Weight:</label> {exercise.weights}
-							</div>
-							<div>
-								<label>Notes:</label> {exercise.notes}
-							</div>
+						<div>
+							<h5>
+								<select onChange={e => this.handleDateSelectChange(e)}>
+									{this.state.dateList.map((date) =>
+										<option key={date}>
+											{getDateFromDateTime(date)}
+										</option>
+									)}
+								</select>
+							</h5>
+							{this.state.pastWorkout.workout_exercises.map(exercise =>
+								<div key={exercise._id} className="past-workout">
+									<div>
+										<label>Exercise:</label> {exercise.name}
+									</div>
+									<div>
+										<label>Reps:</label> {exercise.reps}
+									</div>
+									<div>
+										<label>Weight:</label> {exercise.weights}
+									</div>
+									<div>
+										<label>Notes:</label> {exercise.notes}
+									</div>
+								</div>
+							
+							)}
 						</div>
-				)}
+				}
 			</div>
 		);
 	}

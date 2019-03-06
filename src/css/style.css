@@ -265,6 +265,9 @@ ul {
   -ms-flex-wrap: wrap;
       flex-wrap: wrap;
 }
+.current-workout-edit div[name=sets-dynamic]{
+  border: 2px solid #000;
+}
 .current-workout-edit input,
 .current-workout-edit textarea,
 .current-workout-edit select {
@@ -291,6 +294,13 @@ ul {
   border-right: 0px;
   width: 100%;
 }
+.current-workout-edit select[name=numberOfSets]{
+  width: 24%;
+}
+.current-workout-edit div[name=sets-dynamic]{
+  border-right: 0px;
+  width: 100%;
+}
 .current-workout-edit input[name=exercise]{
   width: 50%;
 }
@@ -311,10 +321,17 @@ ul {
   width: 100%;
   border: 0;
 }
-.current-workout-edit label {
+.current-workout-edit div[name="reps"] {
   border-bottom: 1px solid #000;
   font-size: 1.2rem;
-  width: 8%;
+  width: 100%;
+  padding-left: 10px;
+  padding-top: 10px;
+}
+.current-workout-edit label[name="sets"]{
+  border-bottom: 1px solid #000;
+  font-size: 1.2rem;
+  width: 14%;
   padding-left: 10px;
   padding-top: 10px;
 }
@@ -329,6 +346,9 @@ ul {
   width: 8%;
   padding-left: 10px;
   padding-top: 10px;
+}
+.previous-day h5 {
+  padding-bottom: 25px;
 }
 button,
 input[type=submit] {
@@ -472,9 +492,36 @@ input[type=submit].twitter:after {
   padding: 2rem;
   border: 2px solid #000;
 }
-.workout-selector input,
+.workout-selector input {
+  margin-bottom: 10px;
+  width: 100%;
+}
 .workout-selector button {
   width: 100%;
+}
+.workout-selector button[name=toggleWorkoutView] {
+  width: 100%;
+  color: #fff;
+  background: #000000;
+  margin-bottom: 20px;
+}
+.workout-selector button[name=deleteWorkout] {
+  width: 100%;
+  color: #fff;
+  background: #000000;
+  margin-bottom: 20px;
+}
+.workout-selector button[name=toggleWorkoutView]:hover {
+  width: 100%;
+  color: #fff;
+  background: #72bb88;
+  margin-bottom: 20px;
+}
+.workout-selector button[name=deleteWorkout]:hover {
+  width: 100%;
+  color: #fff;
+  background: #bb0000;
+  margin-bottom: 20px;
 }
 .workout-selector input[type="text"],
 .workout-selector button[type="text"] {

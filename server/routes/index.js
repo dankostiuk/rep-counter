@@ -1,4 +1,5 @@
 var express = require('express');
+var mongoose = require('mongoose');
 var router = express.Router();
 var User = require('../models/user.js');
 var passport = require('passport');
@@ -13,7 +14,7 @@ router.get('/', function(req, res, next) {
 router.get('/login', async function(req, res, next) {
   console.log('GET login called');
   if (req.session.passport) {
-    console.log('Passport user (from cookie): ' + req.session.passport.user);
+    console.log('Passport obj (from cookie): ' + JSON.stringify(req.session.passport));
 
     let success = null;
     await User.findOne({ _id: req.session.passport.user})
@@ -49,7 +50,7 @@ router.post('/login', (req, res, next) => {
 router.post('/register', async function(req, res, next) {
   console.log('user trying to register');
 
-  const { name, email, password, password2 } = req.body;
+  const { email, password } = req.body;
   let errors = [];
 
   // check required fields
@@ -71,7 +72,6 @@ router.post('/register', async function(req, res, next) {
     // TODO: handle this better, errors sent back should be visible to user
     res.status(400).send(errors);
   } else {
-
     User.findOne({ email: email})
       .then(user => {
         if (user) {
@@ -80,9 +80,11 @@ router.post('/register', async function(req, res, next) {
           })
           res.status(409).send(errors);
         } else {
+          let id = mongoose.Types.ObjectId();
           const newUser = new User({
-            email,
-            password
+            _id: id,
+            email: email,
+            password: password,
           });
 
           bcrypt.genSalt(10, (err, salt) => 
@@ -95,9 +97,12 @@ router.post('/register', async function(req, res, next) {
               // save user
               newUser.save()
                 .then(user => {
-                  res.redirect('/');
+                  passport.authenticate('local', {
+                    successRedirect: '/',
+                    failureRedirect: '/',
+                  })(req, res, next);
                 })
-                .catch(err => console.log)
+                .catch(err => console.log(err))
             }))
 
         }

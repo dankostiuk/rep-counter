@@ -4,8 +4,8 @@ import CurrentExercise from './CurrentExercise';
 
 class CurrentDay extends React.Component {
 
-	constructor() {
-		super();
+	constructor(props) {
+		super(props);
 		this.state = {
 			pastWorkout: {
 				workout_exercises: []
@@ -16,7 +16,12 @@ class CurrentDay extends React.Component {
 	componentDidMount() {
 		this._notificationSystem = null;
 		fetch('/workout?type=' + this.props.getWorkoutFromURL())
-			.then(res => res.json())
+			.then(res => {
+				if (!res.ok) {
+					throw Error(res.statusText);
+				}
+				return res.json();
+			})
 			.then(pastWorkout => {
 				this.setState({ pastWorkout })
 			})
@@ -24,7 +29,7 @@ class CurrentDay extends React.Component {
   }
 
 	showNotification(event, type, name) {
-		event.preventDefault();
+		
 		if (this._notificationSystem) {
 
 			if (type === 'save')
@@ -34,12 +39,19 @@ class CurrentDay extends React.Component {
 					level: 'success'
 			 });
 
-			 if (type === 'error')
+			 if (type === 'error_missing')
 				 this._notificationSystem.addNotification({
 					 title: 'Error!',
 					 message: 'Please fill all fields',
 					 level: 'error'
 				});
+
+			if (type === 'error_must_match')
+				this._notificationSystem.addNotification({
+					title: 'Error!',
+					message: 'Sets must be complete',
+					level: 'error'
+			   });
 	 }
  }
 
@@ -79,13 +91,14 @@ class CurrentDay extends React.Component {
 							key={exercise._id}
 							currentExercise={exercise}
 							getWorkoutFromURL={this.props.getWorkoutFromURL}
-							notify={() => this.showNotification}
-							deleteExercise={() => this.deleteExercise}
+							notify={(event, type, name) => 
+								this.showNotification(event, type, name)}
+							deleteExercise={(e) => this.deleteExercise(e)}
 						/>
 					)}
 				</div>
 				<div className="add-new-exercise">
-					<button type="submit" onClick={this.addNewExercise}>+ Add New</button>
+					<button type="submit" onClick={this.addNewExercise}>+ Add Exercise</button>
 				</div>
 			</div>
 		);

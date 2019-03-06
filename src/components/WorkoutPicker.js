@@ -2,6 +2,7 @@ import React from 'react';
 import image from '../css/images/dumbell.png';
 import ReactModalLogin from 'react-modal-login';
 import NotificationSystem from 'react-notification-system';
+import { Grid, Row, Col } from 'react-flexbox-grid';
 
 class WorkoutPicker extends React.Component {
 
@@ -13,7 +14,21 @@ class WorkoutPicker extends React.Component {
     this.state = {
       showModal: false,
       loading: false,
-      loggedIn: false
+      loggedIn: false,
+      showCreateWorkout: false,
+      newWorkout: '',
+      /**
+      workouts: [
+        'Chest',
+        'Back',
+        'Shoulders',
+        'Arms',
+        'Legs',
+        'Cardio'
+      ],
+       */
+      workouts: [],
+      workoutSelected: 0
     };
   }
 
@@ -100,6 +115,7 @@ class WorkoutPicker extends React.Component {
         if (!response.ok) {
           throw Error(response.statusText);
         }
+        console.log(response);
         this.onLoginSuccess('form');  
         this.showNotification('save', 'Registered successfully');
       })
@@ -145,11 +161,27 @@ class WorkoutPicker extends React.Component {
 
   onLoginSuccess(method, response) {
     console.log('logged in successfully with ' + method);
-    this.closeModal();
-    this.setState({
-      loggedIn: true,
-      loading: false
-    })
+    
+    // if we logged in, fetch the workout types
+    fetch('/workout/type')
+      .then(response => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        return response.json();
+      })
+      .then(workoutTypes => {
+
+        this.closeModal();
+        this.setState({
+          loggedIn: true,
+          loading: false,
+          workouts: workoutTypes
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   onLoginFail(method, response) {
@@ -177,6 +209,7 @@ class WorkoutPicker extends React.Component {
     });
   }
 
+  //TODO: make this better
   showNotification(type, name) {
 		if (this._notificationSystem) {
 
@@ -194,15 +227,131 @@ class WorkoutPicker extends React.Component {
 				});
       } else if (type === 'login') {
         this._notificationSystem.addNotification({
-					title: 'Logged in!',
+          title: 'Logged in!',
+          message: 'Have a good workout! 💪',
+					level: 'success'
+         });
+      } else if (type === 'logout') {
+        this._notificationSystem.addNotification({
+          title: 'Logged out!',
+          message: 'Hope to see you soon! 💪',
+          level: 'success'
+          });
+      } else if (type === 'addedWorkout') {
+        this._notificationSystem.addNotification({
+          title: 'Created workout: ' + name,
+          message: 'Please begin workout and add excercises to save this workout.',
 					level: 'success'
 		     });
+      } else if (type === 'emptyWorkout') {
+        this._notificationSystem.addNotification({
+          title: 'Error!',
+          message: 'Workout cannot be empty',
+          level: 'error'
+       });
+      } else if (type === 'deletedWorkout') {
+        this._notificationSystem.addNotification({
+          title: 'Deleted workout: ' + name,
+          message: 'All records for this workout have been deleted.',
+          level: 'success'
+       });
+      } else {
+        this._notificationSystem.addNotification({
+          title: 'Error!',
+          message: 'Feature not completed yet',
+          level: 'error'
+       });
       }
-	 }
- }
+	  }
+  }
+
+  showAddWorkout = (e,showAddworkout) => {
+    e.preventDefault();
+    this.setState({
+      showCreateWorkout: showAddworkout
+    })
+  }
+
+  // ensures first letter of each word is capped
+  updateNewWorkout = (e) => {
+    let currentInput;
+    if (e.target.value.length === 1) {
+      currentInput = e.target.value.toUpperCase();
+    }
+    
+    if (e.target.value.includes(' ')) {
+      let words = e.target.value.split(' ');
+      for (let i = 0; i < words.length; i++) {
+        if (words[i].length === 0) {
+          continue;
+        }
+        let letters = words[i].split('');
+        letters[0] = letters[0].toUpperCase();
+        words[i] = letters.join('');
+      }
+      currentInput = words.join(' ');
+    }
+
+    this.setState({
+      newWorkout: currentInput || e.target.value
+    });
+  }
+
+  addNewWorkout = (e) => {
+    e.preventDefault();
+
+    // check to see if we require login
+    if (!this.state.loggedIn) {
+      fetch('/login')
+      .then(response => {
+        if (!response.ok) {
+          this.openModal();
+        } else {
+          this.onLoginSuccess('session');
+        }
+      })
+    } else {
+      if (!this.state.newWorkout) {
+        this.showNotification('emptyWorkout');
+        return;
+      }
+
+      let currentNewWorkout = this.state.newWorkout.trim();
+      this.setState({
+        workouts: [...this.state.workouts, currentNewWorkout],
+        newWorkout: '',
+        showCreateWorkout: false
+      });
+      this.showNotification('addedWorkout', currentNewWorkout);
+    }
+  }
+
+  deleteWorkout = (e) => {
+    e.preventDefault();
+    
+    let deletedWorkout = this.state.workouts[this.state.workoutSelected];
+    //TODO: do delete here (should delete all exercises for workout selected)
+    fetch('/workout/type/' + deletedWorkout.toLowerCase(), {
+      method: 'DELETE'
+      })
+      .then(response => {
+        let workouts = this.state.workouts;
+        workouts.splice(this.state.workoutSelected, 1);
+        this.setState({
+          workoutSelected: 0,
+          workouts: workouts
+        })
+        this.showNotification('deletedWorkout', deletedWorkout);
+      });
+  }
+
+  handleWorkoutChanged(e) {
+    this.setState({
+      workoutSelected: e.target.selectedIndex
+    });
+	}
 
 	goToWorkout = (event) => {
-		// stop form from saving
     event.preventDefault();
     
     // check to see if we require login
@@ -217,11 +366,27 @@ class WorkoutPicker extends React.Component {
       })
     } else {
        // get text from select
-       const workoutName = this.workoutRef.current.value;
-
+       const urlWorkout = this.workoutRef.current.value.replace(/\s+/g, '-').toLowerCase();
        // change page to /workout/workoutName
-       this.props.history.push(`/workout/${workoutName}`);
+       this.props.history.push(`/workout/${urlWorkout}`);
     }
+  }
+  
+  logout() {
+		fetch('/logout')
+		.then(response => {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
+      this.setState({
+        loggedIn: false,
+      });
+      this.showNotification('logout');
+      this.componentDidMount();
+    })
+    .catch(error => {
+      console.log(error);
+    })
 	}
 
 	render() {
@@ -320,24 +485,75 @@ class WorkoutPicker extends React.Component {
             ],
           }}
        />
-
-
-      <form className="workout-selector" onSubmit={this.goToWorkout}>
+       { this.state.loggedIn ? 
+       <button name="logout" value="logout" onClick={() => this.logout()}>
+				Logout
+      </button> : <div></div>}
+      <form className="workout-selector">
         <img src={image} alt="RepCounter"/>
         <h2>Repcountr</h2>
-        <h5>Select Workout:</h5>
-  			<select name="workout" ref={this.workoutRef}>
-  			  <option value="chest">Chest</option>
-  			  <option value="back">Back</option>
-  			  <option value="shoulders">Shoulders</option>
-  			  <option value="arms">Arms</option>
-  			  <option value="legs">Legs</option>
-  			  <option value="cardio">Cardio</option>
-  			</select>
-  			<button type="submit">Begin Workout</button>
+
+        {this.state.showCreateWorkout || 
+          !this.state.workouts || 
+            this.state.workouts.length === 0
+        ? 
+          <div className="create-new-workout">
+            <Grid fluid style={{paddingLeft:0}}>
+              <Row>
+                <Col xs={5}>
+                {this.state.workouts && this.state.workouts.length > 0 ?
+                  <button name="toggleWorkoutView" onClick={(e) => this.showAddWorkout(e,false)}>
+                  ←Back
+                  </button>
+                  :
+                  <div></div>
+                }
+                </Col>
+              </Row>
+            </Grid>
+            <h5>Add Workout:</h5>
+            <input 
+              value={this.state.newWorkout} 
+              placeholder="E.g. Chest"
+              onChange={(e) => this.updateNewWorkout(e)}/>
+            <button type="submit" onClick={(e) => this.addNewWorkout(e)}>
+              Let's Go!
+            </button>
+				  </div>
+        :
+          <div>
+            <Grid fluid style={{padding:0}}>
+              <Row>
+                <Col xs={5}>
+                <button name="toggleWorkoutView" onClick={(e) => this.showAddWorkout(e,true)}>
+                  +Add Workout
+                </button>
+                </Col>
+                <Col xs={2}/>
+                <Col xs={5}>
+                <button name="deleteWorkout" onClick={(e) => this.deleteWorkout(e,true)}>
+                  Delete Workout
+                </button>
+                </Col>
+              </Row>
+            </Grid>
+            <h5>Select Workout:</h5>
+            <select 
+              name="workout" 
+              ref={this.workoutRef} 
+              value={this.state.workouts[this.state.workoutSelected]}
+              onChange={e => this.handleWorkoutChanged(e)}
+              >
+              {this.state.workouts.map((workout, i) => {
+                return <option key={i} value={workout}>{workout}</option>
+              })}
+            </select>
+            <button type="submit" onClick={(e) => this.goToWorkout(e)}>Begin Workout</button>
+          </div>
+        }
+
+        
       </form>
-
-
       </div>
 	   )
 	}
