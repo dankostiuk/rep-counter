@@ -84,7 +84,7 @@ class CurrentDay extends React.Component {
 		return (
 			<div className="current-day">
 				<NotificationSystem ref={n => this._notificationSystem = n} />
-				<h2>Current {this.props.getWorkoutFromURL()} Day</h2>
+				<h2 name="day-title">Current {this.props.getWorkoutFromURL()} Day</h2>
 				<div className="exercise-list">
 					{this.state.pastWorkout.workout_exercises.map(exercise =>
 						<CurrentExercise

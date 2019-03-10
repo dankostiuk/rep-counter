@@ -66,7 +66,7 @@ class PreviousDay extends React.Component {
 
 		return (
 			<div className="previous-day">
-				<h2>Previous {this.props.getWorkoutFromURL()} Day</h2>
+				<h2 name="day-title">Previous {this.props.getWorkoutFromURL()} Day</h2>
 				{	
 					noPreviousWorkouts 
 					? 
@@ -80,7 +80,7 @@ class PreviousDay extends React.Component {
 						</div>
 					:
 						<div>
-							<h5>
+							<h5 name="heading">
 								<select onChange={e => this.handleDateSelectChange(e)}>
 									{this.state.dateList.map((date) =>
 										<option key={date}>
@@ -91,16 +91,16 @@ class PreviousDay extends React.Component {
 							</h5>
 							{this.state.pastWorkout.workout_exercises.map(exercise =>
 								<div key={exercise._id} className="past-workout">
-									<div>
+									<div name="past-workout-exercise-row">
 										<label>Exercise:</label> {exercise.name}
 									</div>
-									<div>
+									<div name="past-workout-exercise-row">
 										<label>Reps:</label> {exercise.reps}
 									</div>
-									<div>
+									<div name="past-workout-exercise-row">
 										<label>Weight:</label> {exercise.weights}
 									</div>
-									<div>
+									<div name="past-workout-exercise-row">
 										<label>Notes:</label> {exercise.notes}
 									</div>
 								</div>

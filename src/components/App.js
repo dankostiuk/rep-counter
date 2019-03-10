@@ -46,7 +46,7 @@ class App extends React.Component {
 						</Col>
 						<Col xs={3}>
 						<div className="title">
-							_repcountr
+							alkamist
 						</div>
 						</Col>
 						<Col xs={2}>

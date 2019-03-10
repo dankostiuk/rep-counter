@@ -491,7 +491,7 @@ class WorkoutPicker extends React.Component {
       </button> : <div></div>}
       <form className="workout-selector">
         <img src={image} alt="RepCounter"/>
-        <h2>Repcountr</h2>
+        <h2 name="title">alkamist</h2>
 
         {this.state.showCreateWorkout || 
           !this.state.workouts || 
@@ -500,7 +500,7 @@ class WorkoutPicker extends React.Component {
           <div className="create-new-workout">
             <Grid fluid style={{paddingLeft:0}}>
               <Row>
-                <Col xs={5}>
+                <Col xs={5} >
                 {this.state.workouts && this.state.workouts.length > 0 ?
                   <button name="toggleWorkoutView" onClick={(e) => this.showAddWorkout(e,false)}>
                   ←Back
@@ -511,7 +511,7 @@ class WorkoutPicker extends React.Component {
                 </Col>
               </Row>
             </Grid>
-            <h5>Add Workout:</h5>
+            <h5 name="heading">Add Workout:</h5>
             <input 
               value={this.state.newWorkout} 
               placeholder="E.g. Chest"
@@ -537,7 +537,7 @@ class WorkoutPicker extends React.Component {
                 </Col>
               </Row>
             </Grid>
-            <h5>Select Workout:</h5>
+            <h5 name="heading">Select Workout:</h5>
             <select 
               name="workout" 
               ref={this.workoutRef} 
