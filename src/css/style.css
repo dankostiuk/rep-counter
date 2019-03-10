@@ -379,6 +379,9 @@ div [name=past-workout-exercise-row] {
   font-family: sans-serif;
   font-size: 66%;
 }
+.notifications-wrapper div {
+  font-family: sans-serif;
+} 
 button,
 input[type=submit] {
   text-transform: uppercase;
