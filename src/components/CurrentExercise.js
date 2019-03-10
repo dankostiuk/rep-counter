@@ -111,8 +111,8 @@ class CurrentExercise extends React.Component {
 				sets: currentSets
 			});
 		} else {
-			console.log(this.numberOfSetsRef.current.value);
-			for (let i = 0; i < (this.numberOfSetsRef.current.value - currentSets.length); i++) {
+			const originalLength = currentSets.length;
+			for (let i = 0; i < (this.numberOfSetsRef.current.value - originalLength); i++) {
 				currentSets.push({});
 			}
 			this.setState({
