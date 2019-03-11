@@ -2,6 +2,7 @@ import React from 'react';
 import { getDateFromDateTime,
 	convertFromUtc,
 	convertToUtc } from '../dateHelpers';
+import Loader from 'react-loader-spinner';
 
 class PreviousDay extends React.Component {
 
@@ -11,7 +12,8 @@ class PreviousDay extends React.Component {
 			dateList: [],
 			pastWorkout: {
 				workout_exercises: []
-			}
+			},
+			loading: false
 		};
 	}
 
@@ -35,6 +37,7 @@ class PreviousDay extends React.Component {
 			.catch(error => {
 				console.log(error);
 			});
+			this.startLoading();
   	}
 
 	handleDateSelectChange(e) {
@@ -53,13 +56,22 @@ class PreviousDay extends React.Component {
 			})
 			.then(pastWorkout => {
 				console.log(pastWorkout);
-				this.setState({ pastWorkout })
+				this.setState({ 
+					pastWorkout: pastWorkout,
+					loading: false
+				 })
 			})
 			.catch(error => {
 				console.log(error);
 			});
 	}
 
+	startLoading() {
+		this.setState({
+			loading: true
+		})
+	}
+	
 	render() {
 		const noPreviousWorkouts = !this.state.pastWorkout.workout_exercises
 			|| this.state.pastWorkout.workout_exercises.length === 0;
@@ -67,6 +79,19 @@ class PreviousDay extends React.Component {
 		return (
 			<div className="previous-day">
 				<h2 name="day-title">Previous {this.props.getWorkoutFromURL()} Day</h2>
+				
+				{this.state.loading 
+					? 
+					<center><Loader 
+					type="Ball-Triangle"
+					color="#00BFFF"
+					height="50"	
+					width="50"
+					/></center>
+					:
+					<div></div>
+					}
+				
 				{	
 					noPreviousWorkouts 
 					? 

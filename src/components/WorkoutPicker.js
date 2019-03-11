@@ -3,6 +3,7 @@ import image from '../css/images/dumbell.png';
 import ReactModalLogin from 'react-modal-login';
 import NotificationSystem from 'react-notification-system';
 import { Grid, Row, Col } from 'react-flexbox-grid';
+import Loader from 'react-loader-spinner';
 
 class WorkoutPicker extends React.Component {
 
@@ -45,6 +46,7 @@ class WorkoutPicker extends React.Component {
         this.showNotification('login');
       }
     })
+    this.startLoading();
   }
 
   onLogin() {
@@ -83,6 +85,7 @@ class WorkoutPicker extends React.Component {
         console.error(error);
         this.onLoginFail('form', error);
       });
+      this.startLoading();
     }
   }
 
@@ -123,6 +126,7 @@ class WorkoutPicker extends React.Component {
         console.error(error)
         this.onLoginFail('form', error);
       });
+      this.startLoading();
     }
   }
 
@@ -149,6 +153,7 @@ class WorkoutPicker extends React.Component {
   openModal() {
     this.setState({
       showModal: true,
+      loading: false
     });
   }
 
@@ -182,12 +187,14 @@ class WorkoutPicker extends React.Component {
       .catch(error => {
         console.log(error);
       });
+      this.startLoading();
   }
 
   onLoginFail(method, response) {
     console.log('login failed with ' + method);
     this.setState({
-      error: response
+      error: response,
+      loading: false
     })
   }
 
@@ -310,6 +317,7 @@ class WorkoutPicker extends React.Component {
           this.onLoginSuccess('session');
         }
       })
+      this.startLoading();
     } else {
       if (!this.state.newWorkout) {
         this.showNotification('emptyWorkout');
@@ -339,10 +347,12 @@ class WorkoutPicker extends React.Component {
         workouts.splice(this.state.workoutSelected, 1);
         this.setState({
           workoutSelected: 0,
-          workouts: workouts
+          workouts: workouts,
+          loading: false
         })
         this.showNotification('deletedWorkout', deletedWorkout);
       });
+      this.startLoading();
   }
 
   handleWorkoutChanged(e) {
@@ -364,6 +374,7 @@ class WorkoutPicker extends React.Component {
           this.onLoginSuccess('session');
         }
       })
+      this.startLoading();
     } else {
        // get text from select
        const urlWorkout = this.workoutRef.current.value.replace(/\s+/g, '-').toLowerCase();
@@ -387,6 +398,7 @@ class WorkoutPicker extends React.Component {
     .catch(error => {
       console.log(error);
     })
+    this.startLoading();
 	}
 
 	render() {
@@ -492,6 +504,18 @@ class WorkoutPicker extends React.Component {
       <form className="workout-selector">
         <img src={image} alt="RepCounter"/>
         <h2 name="title">alkamist</h2>
+
+        {this.state.loading 
+        ? 
+        <center><Loader 
+         type="Ball-Triangle"
+         color="#00BFFF"
+         height="50"	
+         width="50"
+        /></center>
+        :
+          <div></div>
+        }
 
         {this.state.showCreateWorkout || 
           !this.state.workouts || 

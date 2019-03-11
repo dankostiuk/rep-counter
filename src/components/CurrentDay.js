@@ -1,6 +1,7 @@
 import React from 'react';
 import NotificationSystem from 'react-notification-system';
 import CurrentExercise from './CurrentExercise';
+import Loader from 'react-loader-spinner';
 
 class CurrentDay extends React.Component {
 
@@ -9,7 +10,8 @@ class CurrentDay extends React.Component {
 		this.state = {
 			pastWorkout: {
 				workout_exercises: []
-			}
+			},
+			loading: false
 		};
 	}
 
@@ -23,10 +25,14 @@ class CurrentDay extends React.Component {
 				return res.json();
 			})
 			.then(pastWorkout => {
-				this.setState({ pastWorkout })
+				this.setState({ 
+					pastWorkout: pastWorkout,
+					loading: false
+				})
 			})
 			.catch(error => { console.error(error)});
-  }
+			this.startLoading();
+  	}
 
 	showNotification(event, type, name) {
 		
@@ -52,10 +58,10 @@ class CurrentDay extends React.Component {
 					message: 'Sets must be complete',
 					level: 'error'
 			   });
-	 }
- }
+	 	}
+ 	}
 
- addNewExercise = (event)  => {
+ 	addNewExercise = (event)  => {
 		const newExercise = {
 			_id: this.state.pastWorkout.workout_exercises.length,
 			name: '',
@@ -67,18 +73,24 @@ class CurrentDay extends React.Component {
 		pastWorkout.workout_exercises.push(newExercise);
 
 		this.setState({pastWorkout});
- }
+	}
 
- deleteExercise = (exercise) => {
-	 let pastWorkout = {...this.state.pastWorkout};
-	 let currentExercises = pastWorkout.workout_exercises.filter( workout_exercise => {
-		 return workout_exercise._id !== exercise._id;
-	 });
+ 	deleteExercise = (exercise) => {
+		let pastWorkout = {...this.state.pastWorkout};
+		let currentExercises = pastWorkout.workout_exercises.filter( workout_exercise => {
+			return workout_exercise._id !== exercise._id;
+		});
 
-	 pastWorkout.workout_exercises = currentExercises;
+		pastWorkout.workout_exercises = currentExercises;
 
-	 this.setState({pastWorkout});
- }
+		this.setState({pastWorkout});
+ 	}
+
+	startLoading() {
+		this.setState({
+			loading: true
+		})
+	}
 
 	render() {
 		return (
@@ -86,6 +98,19 @@ class CurrentDay extends React.Component {
 				<NotificationSystem ref={n => this._notificationSystem = n} />
 				<h2 name="day-title">Current {this.props.getWorkoutFromURL()} Day</h2>
 				<div className="exercise-list">
+
+				{this.state.loading 
+					? 
+					<center><Loader 
+					type="Ball-Triangle"
+					color="#00BFFF"
+					height="50"	
+					width="50"
+					/></center>
+					:
+					<div></div>
+					}
+
 					{this.state.pastWorkout.workout_exercises.map(exercise =>
 						<CurrentExercise
 							key={exercise._id}
