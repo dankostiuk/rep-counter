@@ -1,133 +1,137 @@
-import React from 'react';
-import NotificationSystem from 'react-notification-system';
-import CurrentExercise from './CurrentExercise';
-import Loader from 'react-loader-spinner';
+import React from "react";
+import NotificationSystem from "react-notification-system";
+import CurrentExercise from "./CurrentExercise";
+import Loader from "react-loader-spinner";
 
 class CurrentDay extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pastWorkout: {
+        workout_exercises: []
+      },
+      loading: false
+    };
+  }
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			pastWorkout: {
-				workout_exercises: []
-			},
-			loading: false
-		};
-	}
+  componentDidMount() {
+    this._notificationSystem = null;
+    fetch("/workout?type=" + this.props.getWorkoutFromURL())
+      .then(res => {
+        if (!res.ok) {
+          throw Error(res.statusText);
+        }
+        return res.json();
+      })
+      .then(pastWorkout => {
+        this.setState({
+          pastWorkout: pastWorkout,
+          loading: false
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    this.startLoading();
+  }
 
-	componentDidMount() {
-		this._notificationSystem = null;
-		fetch('/workout?type=' + this.props.getWorkoutFromURL())
-			.then(res => {
-				if (!res.ok) {
-					throw Error(res.statusText);
-				}
-				return res.json();
-			})
-			.then(pastWorkout => {
-				this.setState({ 
-					pastWorkout: pastWorkout,
-					loading: false
-				})
-			})
-			.catch(error => { console.error(error)});
-			this.startLoading();
-  	}
+  showNotification(event, type, name) {
+    if (this._notificationSystem) {
+      if (type === "save")
+        this._notificationSystem.addNotification({
+          title: "Saved!",
+          message: name,
+          level: "success"
+        });
 
-	showNotification(event, type, name) {
-		
-		if (this._notificationSystem) {
+      if (type === "error_missing")
+        this._notificationSystem.addNotification({
+          title: "Error!",
+          message: "Please fill all fields",
+          level: "error"
+        });
 
-			if (type === 'save')
-	 			this._notificationSystem.addNotification({
-					title: 'Saved!',
-					message: name,
-					level: 'success'
-			 });
+      if (type === "error_must_match")
+        this._notificationSystem.addNotification({
+          title: "Error!",
+          message: "Sets must be complete",
+          level: "error"
+        });
+    }
+  }
 
-			 if (type === 'error_missing')
-				 this._notificationSystem.addNotification({
-					 title: 'Error!',
-					 message: 'Please fill all fields',
-					 level: 'error'
-				});
+  addNewExercise = event => {
+    const newExercise = {
+      _id: this.state.pastWorkout.workout_exercises.length,
+      name: "",
+      reps: "",
+      weights: "",
+      notes: ""
+    };
+    let pastWorkout = { ...this.state.pastWorkout };
+    pastWorkout.workout_exercises.push(newExercise);
 
-			if (type === 'error_must_match')
-				this._notificationSystem.addNotification({
-					title: 'Error!',
-					message: 'Sets must be complete',
-					level: 'error'
-			   });
-	 	}
- 	}
+    this.setState({ pastWorkout });
+  };
 
- 	addNewExercise = (event)  => {
-		const newExercise = {
-			_id: this.state.pastWorkout.workout_exercises.length,
-			name: '',
-			reps: '',
-			weights: '',
-			notes: '',
-		}
-		let pastWorkout = {...this.state.pastWorkout};
-		pastWorkout.workout_exercises.push(newExercise);
+  deleteExercise = exercise => {
+    let pastWorkout = { ...this.state.pastWorkout };
+    let currentExercises = pastWorkout.workout_exercises.filter(
+      workout_exercise => {
+        return workout_exercise._id !== exercise._id;
+      }
+    );
 
-		this.setState({pastWorkout});
-	}
+    pastWorkout.workout_exercises = currentExercises;
 
- 	deleteExercise = (exercise) => {
-		let pastWorkout = {...this.state.pastWorkout};
-		let currentExercises = pastWorkout.workout_exercises.filter( workout_exercise => {
-			return workout_exercise._id !== exercise._id;
-		});
+    this.setState({ pastWorkout });
+  };
 
-		pastWorkout.workout_exercises = currentExercises;
+  startLoading() {
+    this.setState({
+      loading: true
+    });
+  }
 
-		this.setState({pastWorkout});
- 	}
+  render() {
+    return (
+      <div className="current-day">
+        <NotificationSystem ref={n => (this._notificationSystem = n)} />
+        <h2 name="day-title">Current {this.props.getWorkoutFromURL()} Day</h2>
+        <div className="exercise-list">
+          {this.state.loading ? (
+            <center>
+              <Loader
+                type="Ball-Triangle"
+                color="#00BFFF"
+                height="50"
+                width="50"
+              />
+            </center>
+          ) : (
+            <div />
+          )}
 
-	startLoading() {
-		this.setState({
-			loading: true
-		})
-	}
-
-	render() {
-		return (
-			<div className="current-day">
-				<NotificationSystem ref={n => this._notificationSystem = n} />
-				<h2 name="day-title">Current {this.props.getWorkoutFromURL()} Day</h2>
-				<div className="exercise-list">
-
-				{this.state.loading 
-					? 
-					<center><Loader 
-					type="Ball-Triangle"
-					color="#00BFFF"
-					height="50"	
-					width="50"
-					/></center>
-					:
-					<div></div>
-					}
-
-					{this.state.pastWorkout.workout_exercises.map(exercise =>
-						<CurrentExercise
-							key={exercise._id}
-							currentExercise={exercise}
-							getWorkoutFromURL={this.props.getWorkoutFromURL}
-							notify={(event, type, name) => 
-								this.showNotification(event, type, name)}
-							deleteExercise={(e) => this.deleteExercise(e)}
-						/>
-					)}
-				</div>
-				<div className="add-new-exercise">
-					<button type="submit" onClick={this.addNewExercise}>+ Add Exercise</button>
-				</div>
-			</div>
-		);
-	}
+          {this.state.pastWorkout.workout_exercises.map(exercise => (
+            <CurrentExercise
+              key={exercise._id}
+              currentExercise={exercise}
+              getWorkoutFromURL={this.props.getWorkoutFromURL}
+              notify={(event, type, name) =>
+                this.showNotification(event, type, name)
+              }
+              deleteExercise={e => this.deleteExercise(e)}
+            />
+          ))}
+        </div>
+        <div className="add-new-exercise">
+          <button type="submit" onClick={this.addNewExercise}>
+            + Add Exercise
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default CurrentDay;
