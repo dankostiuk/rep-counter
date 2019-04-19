@@ -271,6 +271,19 @@ h3 {
   -ms-flex-preferred-size: 50%;
   flex-basis: 50%;
 }
+
+.rep-counter button[name="togglePreviousView"] {
+  color: #fff;
+  background: #000000;
+  margin-bottom: 20px;
+}
+
+.rep-counter button[name="togglePreviousView"]:hover {
+  color: #fff;
+  background: #1955a5;
+  margin-bottom: 20px;
+}
+
 input#fold:not(:checked) ~ #main .rep-counter > * {
   -webkit-transform: none;
   transform: none;
@@ -362,6 +375,7 @@ ul {
   padding-top: 10px;
 }
 div [name="volume"] {
+  display: inline-block;
   border-top: 2px solid #000;
   border-left: 2px solid #000;
   border-right: 2px solid #000;
@@ -373,6 +387,16 @@ div [name="volume"] {
   font-family: sans-serif;
   font-size: 50%;
   text-transform: uppercase;
+}
+div [name="units"] {
+  display: inline-block;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: max-content;
+  font-family: sans-serif;
+  font-size: 50%;
 }
 .past-workout {
   font-size: 1.3rem;
@@ -606,4 +630,54 @@ input[type="submit"].twitter:after {
   color: #ffffff;
   text-align: right;
   width: 100%;
+}
+
+.switch-field {
+  padding: 0px;
+  overflow: hidden;
+}
+
+.switch-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.switch-field input {
+  position: absolute !important;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  width: 1px;
+  border: 0;
+  overflow: hidden;
+}
+
+.switch-field label {
+  display: inline-block;
+  width: 50px;
+  background-color: #e4e4e4;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 11px;
+  font-weight: normal;
+  text-align: center;
+  text-shadow: none;
+  padding: 6px 14px;
+  transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+  cursor: pointer;
+}
+
+.switch-field input:checked + label {
+  background-color: #1955a5;
+  color: #fff;
+  box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+  border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+  border-radius: 0 4px 4px 0;
 }

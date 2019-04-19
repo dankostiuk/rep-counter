@@ -36,7 +36,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 
-// express session - but passport uses a different cookie?
+// express session
 app.use(
   session({
     //key: 'user_id',

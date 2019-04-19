@@ -6,6 +6,7 @@ class CurrentExercise extends React.Component {
     super(props);
     this.state = {
       sets: [],
+      units: "lbs",
       volume: 0
     };
   }
@@ -101,16 +102,13 @@ class CurrentExercise extends React.Component {
   };
 
   getVolume = () => {
-    let totalReps = 0;
-    let totalWeight = 0;
+    let vScore = 0;
     this.state.sets.forEach(set => {
-      totalReps += !set.reps ? 0 : parseInt(set.reps);
-      totalWeight += !set.weights ? 0 : parseInt(set.weights);
+      let reps = !set.reps ? 0 : parseInt(set.reps);
+      let weights = !set.weights ? 0 : parseInt(set.weights);
+      vScore += reps * weights;
     });
-    return (
-      (totalReps * totalWeight) /
-      this.state.sets.filter(e => e.weights && e.reps).length
-    );
+    return vScore;
   };
 
   handleSetSets = () => {
@@ -139,11 +137,39 @@ class CurrentExercise extends React.Component {
     }
   };
 
+  handleUnitsChanged = value => {
+    this.setState({
+      units: value
+    });
+  };
+
   render() {
     return (
       <div>
         <div name="volume">
-          Volume: {!isNaN(this.state.volume) ? this.state.volume : ""}
+          Vol: {!isNaN(this.state.volume) ? this.state.volume : ""}
+        </div>
+        <div name="units">
+          <form className="switch-field">
+            <input
+              type="radio"
+              id="switch_left"
+              name="switchToggle"
+              value="lbs"
+              onChange={this.handleUnitsChanged}
+              checked={this.state.unitsLbs}
+            />
+            <label htmlFor="switch_left">lbs</label>
+            <input
+              type="radio"
+              id="switch_right"
+              name="switchToggle"
+              value="kg"
+              onChange={this.handleUnitsChanged}
+              checked={!this.state.unitsLbs}
+            />
+            <label htmlFor="switch_right">kg</label>
+          </form>
         </div>
         <div className="current-workout-edit">
           <input

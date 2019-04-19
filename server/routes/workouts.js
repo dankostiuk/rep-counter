@@ -73,14 +73,11 @@ router.get("/", ensureAuthenticated, async function(req, res, next) {
       // add ORM
       let exercises = workouts[i].workout_exercises;
       for (let j = 0; j < exercises.length; j++) {
-        let totalWeights = exercises[j].weights
-          .split("-")
-          .reduce((a, b) => parseInt(a) + parseInt(b));
-        let totalReps = exercises[j].reps
-          .split("-")
-          .reduce((a, b) => parseInt(a) + parseInt(b));
-        let sets = exercises[j].reps.split("-").length;
-        let vScore = (totalReps * totalWeights) / sets;
+        let weights = exercises[j].weights.split("-");
+        let vScore = 0;
+        exercises[j].reps.split("-").forEach((rep, i) => {
+          vScore += parseInt(rep) * parseInt(weights[i]);
+        });
         workouts[i].workout_exercises[j].v_score = vScore;
       }
 
