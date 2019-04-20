@@ -85,52 +85,41 @@ class App extends React.Component {
           </Row>
         </Grid>
 
-        {isMobile ? (
-          <div className="rep-counter">
-            {previousDayActive ? (
-              <Grid fluid>
-                <Row end="xs">
-                  <Col xs={4}>
-                    <button
-                      name="togglePreviousView"
-                      onClick={this.toggleMWebWorkoutView}
-                    >
-                      Back ➡
-                    </button>
-                  </Col>
-                </Row>
-                <PreviousDay
-                  getWorkoutFromURL={this.getWorkoutFromURL}
-                  setPastWorkouts={this.setPastWorkout}
-                />
-              </Grid>
-            ) : (
-              <Grid fluid>
+        <div className="rep-counter">
+          <Grid
+            fluid
+            className={!isMobile || previousDayActive ? "" : "hidden"}
+          >
+            <Row end="xs">
+              <Col xs={12}>
                 <button
                   name="togglePreviousView"
                   onClick={this.toggleMWebWorkoutView}
+                  className={isMobile ? "" : "hidden"}
                 >
-                  ⬅ Previous Day Results
+                  Back ➡
                 </button>
-                <CurrentDay
-                  getWorkoutFromURL={this.getWorkoutFromURL}
-                  updateWorkout={this.updateWorkout}
-                />
-              </Grid>
-            )}
-          </div>
-        ) : (
-          <div className="rep-counter">
+              </Col>
+            </Row>
             <PreviousDay
               getWorkoutFromURL={this.getWorkoutFromURL}
               setPastWorkouts={this.setPastWorkout}
             />
+          </Grid>
+          <Grid fluid className={isMobile && previousDayActive ? "hidden" : ""}>
+            <button
+              name="togglePreviousView"
+              onClick={this.toggleMWebWorkoutView}
+              className={isMobile ? "" : "hidden"}
+            >
+              ⬅ Previous Day Results
+            </button>
             <CurrentDay
               getWorkoutFromURL={this.getWorkoutFromURL}
               updateWorkout={this.updateWorkout}
             />
-          </div>
-        )}
+          </Grid>
+        </div>
 
         <div className="copyright">
           <span role="img" aria-label="lift">
