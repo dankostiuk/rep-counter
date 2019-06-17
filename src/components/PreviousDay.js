@@ -119,7 +119,8 @@ class PreviousDay extends React.Component {
                   <label>Reps:</label> {exercise.reps}
                 </div>
                 <div name="past-workout-exercise-row">
-                  <label>Weight:</label> {exercise.weights}
+                  <label>{`Weight (${exercise.isKg ? `kg` : `lbs`}):`}</label>{" "}
+                  {exercise.weights}
                 </div>
                 <div name="past-workout-exercise-row">
                   <label>Volume:</label> {exercise.v_score}

@@ -17,16 +17,6 @@ class WorkoutPicker extends React.Component {
       loggedIn: false,
       showCreateWorkout: false,
       newWorkout: "",
-      /**
-      workouts: [
-        'Chest',
-        'Back',
-        'Shoulders',
-        'Arms',
-        'Legs',
-        'Cardio'
-      ],
-       */
       workouts: [],
       workoutSelected: 0
     };

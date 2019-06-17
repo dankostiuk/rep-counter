@@ -6,13 +6,13 @@ class CurrentExercise extends React.Component {
     super(props);
     this.state = {
       sets: [],
-      units: "lbs",
+      isKg: true,
       volume: 0
     };
   }
 
   componentDidMount() {
-    let { reps, weights, v_score } = this.props.currentExercise;
+    let { reps, weights, isKg, v_score } = this.props.currentExercise;
 
     let repsArr = reps.split("-");
     let weightsArr = weights.split("-");
@@ -27,6 +27,7 @@ class CurrentExercise extends React.Component {
 
     this.setState({
       sets: setsArr,
+      isKg: isKg,
       volume: v_score
     });
   }
@@ -137,40 +138,76 @@ class CurrentExercise extends React.Component {
     }
   };
 
-  handleUnitsChanged = value => {
+  handleUnitsChanged = () => {
+    const lbsPerKg = 2.20462;
+    let newSets = this.state.sets.map((e, i) => {
+      let newWeight =
+        this.state.sets[i].weights !== undefined
+          ? this.state.isKg
+            ? Math.round(this.state.sets[i].weights * lbsPerKg * 100) / 100
+            : Math.round((this.state.sets[i].weights / lbsPerKg) * 100) / 100
+          : undefined;
+
+      return {
+        reps: this.state.sets[i].reps,
+        weights: newWeight
+      };
+    });
+
     this.setState({
-      units: value
+      isKg: !this.state.isKg,
+      sets: newSets,
+      volume: this.state.isKg
+        ? Math.round(this.state.volume * lbsPerKg * 100) / 100
+        : Math.round((this.state.volume / lbsPerKg) * 100) / 100
     });
   };
 
   render() {
     return (
       <div>
-        <div name="volume">
-          Vol: {!isNaN(this.state.volume) ? this.state.volume : ""}
-        </div>
-        <div name="units">
-          <form className="switch-field">
-            <input
-              type="radio"
-              id="switch_left"
-              name="switchToggle"
-              value="lbs"
-              onChange={this.handleUnitsChanged}
-              checked={this.state.unitsLbs}
-            />
-            <label htmlFor="switch_left">lbs</label>
-            <input
-              type="radio"
-              id="switch_right"
-              name="switchToggle"
-              value="kg"
-              onChange={this.handleUnitsChanged}
-              checked={!this.state.unitsLbs}
-            />
-            <label htmlFor="switch_right">kg</label>
-          </form>
-        </div>
+        <Grid fluid style={{ padding: 0 }}>
+          <Row between="xs">
+            <Col xs={2}>
+              <div name="volume">
+                Vol: {!isNaN(this.state.volume) ? this.state.volume : ""}
+              </div>
+            </Col>
+            <Col xs={10}>
+              <div name="units">
+                <form className="switch-field">
+                  <input
+                    type="radio"
+                    id={this.props.currentExercise._id + "switch_left"}
+                    name="switchToggle"
+                    value="kg"
+                    onChange={this.handleUnitsChanged}
+                    checked={this.state.isKg}
+                  />
+                  <label
+                    htmlFor={this.props.currentExercise._id + "switch_left"}
+                  >
+                    kg
+                  </label>
+                  <input
+                    type="radio"
+                    id={this.props.currentExercise._id + "switch_right"}
+                    name="switchToggle"
+                    value="lbs"
+                    onChange={this.handleUnitsChanged}
+                    checked={!this.state.isKg}
+                  />
+                  <label
+                    htmlFor={this.props.currentExercise._id + "switch_right"}
+                  >
+                    lbs
+                  </label>
+                </form>
+              </div>
+            </Col>
+          </Row>
+        </Grid>
+
         <div className="current-workout-edit">
           <input
             name="exercise"
@@ -214,7 +251,7 @@ class CurrentExercise extends React.Component {
                       <input
                         name={`reps-${i}`}
                         placeholder={`R${i + 1}`}
-                        defaultValue={this.state.sets[i].reps}
+                        value={this.state.sets[i].reps}
                         onChange={e => this.handleSetReps(e, i)}
                         style={{
                           paddingLeft: 18 - this.state.sets.length,
@@ -236,7 +273,7 @@ class CurrentExercise extends React.Component {
                       <input
                         name={`weights-${i}`}
                         placeholder={`W${i + 1}`}
-                        defaultValue={this.state.sets[i].weights}
+                        value={this.state.sets[i].weights}
                         onChange={e => this.handleSetWeights(e, i)}
                         style={{
                           paddingLeft: 18 - this.state.sets.length,

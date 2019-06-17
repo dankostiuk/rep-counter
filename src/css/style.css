@@ -376,24 +376,17 @@ ul {
 }
 div [name="volume"] {
   display: inline-block;
-  border-top: 2px solid #000;
-  border-left: 2px solid #000;
-  border-right: 2px solid #000;
+  background-color: rgb(219, 255, 254);
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 10px;
   padding-right: 10px;
   width: max-content;
   font-family: sans-serif;
-  font-size: 50%;
+  font-size: 60%;
   text-transform: uppercase;
 }
 div [name="units"] {
-  display: inline-block;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  padding-left: 10px;
-  padding-right: 10px;
   width: max-content;
   font-family: sans-serif;
   font-size: 50%;
@@ -655,7 +648,7 @@ input[type="submit"].twitter:after {
   display: inline-block;
   width: 50px;
   background-color: #e4e4e4;
-  color: rgba(0, 0, 0, 0.6);
+  color: #000000;
   font-size: 11px;
   font-weight: normal;
   text-align: center;
